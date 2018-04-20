@@ -9,5 +9,6 @@
 return [
 
     'yii/base/xxx' =>YII2_PATH. '',
+    'yii\di\Container' => YII2_PATH . '/di/Container.php',
 
 ];

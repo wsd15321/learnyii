@@ -15,6 +15,8 @@ class BaseYii
 
     public static $classMap;
 
+    public static $container;
+
     /**
      * 框架本身依赖这个自动加载
      */
@@ -22,7 +24,7 @@ class BaseYii
     {
         if (isset(static::$classMap[$className])) {
             $classFile = static::$classMap[$className];
-            if (substr($classFile,0,1) == '@') {
+            if (substr($classFile,0,1) === '@') {
                 $classFile = static::getAlias($className);
             }
             //命名空间必须有二级以上
@@ -38,6 +40,18 @@ class BaseYii
         include($classFile);
 
     }
+
+    public static function configure($object,$properties)
+    {
+
+        foreach ($properties as $name=>$property) {
+            $object->$name = $property;
+        }
+
+        return $object;
+    }
+
+
 
     /**
      * 别名获取路径
