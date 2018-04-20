@@ -19,9 +19,11 @@ class BaseYii
      */
     public static function autoload($className)
     {
-        //todo 后面再学
         if (isset(static::$classMap[$className])) {
-
+            $classFile = static::$classMap[$className];
+            if (substr($classFile,0,1) == '@') {
+                $classFile = static::getAlias($className);
+            }
             //命名空间必须有二级以上
         } elseif (strpos($className, '\\') !== false) {
             $classFile = static::getAlias('@' . str_replace('\\', '/', $className) . '.php', false);
@@ -36,6 +38,9 @@ class BaseYii
 
     }
 
+    /**
+     * 别名获取路径
+     */
     public static function getAlias($alias, $throwException = true)
     {
         //不是别名就是完整的路径
