@@ -10,6 +10,7 @@ class BaseYii
 
     public static $app;
 
+    /** @var array 别名组合 */
     public static $aliases = ['@yii' => __DIR__];
 
     public static $classMap;
