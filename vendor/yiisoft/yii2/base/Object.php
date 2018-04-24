@@ -33,7 +33,7 @@ class Object
     {
         $getter = 'get' . $name;
         if (method_exists($this, $getter)) {
-            $this->$getter();
+            return $this->$getter();
         } elseif (method_exists($this, 'set' . $name)) {
             exit('exists is set' . get_class($this) . ' ' . $name);
         } else {
@@ -45,7 +45,7 @@ class Object
     {
         $setter = 'set' . $name;
         if (method_exists($this,$setter)) {
-            $this->$setter($value);
+            return $this->$setter($value);
         } elseif (method_exists($this,'get'.$name)) {
             exit('Setting read-only property: ' . get_class($this) . '::' . $name);
         } else {
