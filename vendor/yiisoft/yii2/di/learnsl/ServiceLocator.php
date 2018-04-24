@@ -51,7 +51,6 @@ class ServiceLocator implements ServiceLocatorInterface
      */
     public function has($interface)
     {
-        var_dump($this->services,$this->instantiated);
         return (isset($this->services[$interface]) || isset($this->instantiated[$interface]));
     }
 

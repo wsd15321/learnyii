@@ -49,9 +49,6 @@ class ServiceLocatorTest
             $this->databaseService
         );
 
-        $d = $this->serviceLocator->has('yii\di\learnsl\DatabaseServiceInterface');
-        return $d;
-
     }
 
     public function testServicesWithObject()
