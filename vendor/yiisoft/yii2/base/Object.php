@@ -18,7 +18,7 @@ class Object
         return get_called_class();
     }
 
-    public function __construct($config)
+    public function __construct($config = [])
     {
         if (!empty($config)) {
             Yii::configure($this,$config);
