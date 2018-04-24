@@ -126,4 +126,14 @@ class BaseYii
     }
 
 
+    /**
+     * yii专用创建对象的方法
+     */
+    public static function createObject()
+    {
+
+    }
+
+
+
 }
