@@ -23,9 +23,18 @@ class Container extends Object
 
 
 
-    public function get($class)
+    public function get($class, $params = [], $config = [])
     {
-        return null;
+        //是否单例
+        if (isset($this->_singletons[$class])) {
+            return $this->_singletons[$class];
+        } elseif (!isset($this->_definitions[$class])) {
+            return $this->build($class,$params,$config);
+        }
+
+
+
+
     }
 
     /**
@@ -157,6 +166,26 @@ class Container extends Object
             }
         }
         return $dependencies;
+    }
+
+
+    /**
+     * @return array
+     */
+    protected function mergeParams($class, $params)
+    {
+        if (empty($this->_params[$class])) {
+            return $params;
+        } elseif (empty($params)) {
+            return $this->_params[$class];
+        } else {
+            //$params有缓存并也有配置传入就逐一覆盖
+            $ps = $this->_params[$class];
+            foreach ($params as $index => $value) {
+                $ps[$index] = $value;
+            }
+            return $ps;
+        }
     }
 
 
