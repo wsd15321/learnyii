@@ -31,7 +31,12 @@ class Container extends Object
         } elseif (!isset($this->_definitions[$class])) {
             return $this->build($class,$params,$config);
         }
-
+        //到这步说明已定义依赖
+        $definition = $this->_definitions[$class];
+        if (is_callable($definition,true)) {
+            $params = $this->resolveDependencies($this->mergeParams($class,$params));
+            $object = call_user_func($definition,$this,$params,$config);
+        }
 
 
 
