@@ -10,7 +10,7 @@ namespace yii\base;
 
 use Yii;
 
-class Object
+class Object implements Configurable
 {
 
     public static function className()
