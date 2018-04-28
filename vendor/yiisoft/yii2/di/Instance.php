@@ -12,7 +12,7 @@ namespace yii\di;
 class Instance
 {
 
-    private $id;
+    public $id;
 
     protected function __construct($id)
     {

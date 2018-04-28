@@ -6,21 +6,20 @@ use yii\base\Object;
 
 class Container extends Object
 {
-    // 用于保存单例Singleton对象，以对象类型为键
+    // 用于保存单例
     private $_singletons = [];
 
-    // 用于保存依赖的定义，以对象类型为键
+    // 用于保存依赖的定义
     private $_definitions = [];
 
-    // 用于保存构造函数的参数，以对象类型为键
+    // 用于保存构造函数的参数
     private $_params = [];
 
-    // 用于缓存ReflectionClass对象，以类名或接口名为键
+    // 用于缓存ReflectionClass对象
     private $_reflections = [];
 
-    // 用于缓存依赖信息，以类名或接口名为键
+    // 保存类依赖，主要通过反射解析类构造函数所需构造参数
     private $_dependencies = [];
-
 
 
     public function get($class, $params = [], $config = [])
@@ -29,16 +28,38 @@ class Container extends Object
         if (isset($this->_singletons[$class])) {
             return $this->_singletons[$class];
         } elseif (!isset($this->_definitions[$class])) {
-            return $this->build($class,$params,$config);
+            //到这步说明已经没有依赖，开始创建对象
+            return $this->build($class, $params, $config);
         }
         //到这步说明已定义依赖
         $definition = $this->_definitions[$class];
-        if (is_callable($definition,true)) {
-            $params = $this->resolveDependencies($this->mergeParams($class,$params));
-            $object = call_user_func($definition,$this,$params,$config);
+        if (is_callable($definition, true)) {
+            //回调函数将会调用
+            $params = $this->resolveDependencies($this->mergeParams($class, $params));
+            //此处暂不明，参数格式显然有要求
+            $object = call_user_func($definition, $this, $params, $config);
+        } elseif (is_array($definition)) {
+            $concrete = $definition['class'];
+            unset($definition['class']);
+            $config = array_merge($config, $definition);
+            $params = $this->mergeParams($class, $params);
+            if ($concrete === $class) {
+                $object = $this->build($class, $params, $config);
+            } else {
+                $object = $this->get($concrete, $params, $config);
+            }
+
+        } elseif (is_object($definition)) {
+            return $this->_singletons[$class] = $definition;
+        } else {
+            exit('Unexpected object definition type: ' . gettype($definition));
         }
 
+        if (array_key_exists($class, $this->_singletons)) {
+            $this->_singletons[$class] = $object;
+        }
 
+        return $object;
 
     }
 
@@ -53,15 +74,14 @@ class Container extends Object
     {
         list ($reflection, $dependencies) = $this->getDependencies($class);
         //传入的参数覆盖掉原有的默认参数 构造函数的参数
-        foreach ($params as $index=>$param) {
+        foreach ($params as $index => $param) {
             $dependencies[$index] = $param;
         }
-
         //如果有参数是对象则获取该参数转成实例
-        $dependencies = $this->resolveDependencies($dependencies,$reflection);
+        $dependencies = $this->resolveDependencies($dependencies, $reflection);
         // 能否实例化
         if (!$reflection->isInstantiable()) {
-            exit('not instantiable');
+            exit('不能实例化');
         }
 
         //没有配置就直接实例化$reflection
@@ -78,7 +98,7 @@ class Container extends Object
         } else {
             //可能不是Object子类，但仍会给属性逐一赋值
             $object = $reflection->newInstanceArgs($dependencies);
-            foreach ($config as $name=>$value) {
+            foreach ($config as $name => $value) {
                 $object->$name = $value;
             }
             return $object;
@@ -87,10 +107,9 @@ class Container extends Object
     }
 
 
-
-    public function set($class,$definition, array $params)
+    public function set($class, $definition = [], array $params = [])
     {
-        $this->_definitions[$class] = $this->normalizeDefinition($class,$definition);
+        $this->_definitions[$class] = $this->normalizeDefinition($class, $definition);
         $this->_params[$class] = $params;
         unset($this->_singletons[$class]);
         return $this;
@@ -106,14 +125,14 @@ class Container extends Object
     protected function normalizeDefinition($class, $definition)
     {
         if (empty($definition)) {
-            return ['class'=>$class];
+            return ['class' => $class];
         } elseif (is_string($definition)) {
             return ['class' => $definition];
-        } elseif (is_callable($definition,true) || is_object($definition)) {
+        } elseif (is_callable($definition, true) || is_object($definition)) {
             return $definition;
         } elseif (is_array($definition)) {
             if (!isset($definition['class'])) {
-                if (strpos($class,'\\') !== false) {
+                if (strpos($class, '\\') !== false) {
                     $definition[$class] = $class;
                 } else {
                     exit("A class definition requires a \"class\" member.");
@@ -129,7 +148,7 @@ class Container extends Object
     public function getDependencies($class)
     {
         if (isset($this->_reflections[$class])) {
-            return [$this->_reflections[$class],$this->_dependencies[$class]];
+            return [$this->_reflections[$class], $this->_dependencies[$class]];
         }
 
         $dependencies = [];
@@ -150,7 +169,7 @@ class Container extends Object
         }
         $this->_definitions[$class] = $dependencies;
         $this->_reflections[$class] = $reflection;
-        return [$reflection,$dependencies];
+        return [$reflection, $dependencies];
     }
 
     /**
@@ -160,11 +179,10 @@ class Container extends Object
      */
     protected function resolveDependencies($dependencies, $reflection = null)
     {
-        $id = 'id';
-        foreach ($dependencies as $index=>$dependency) {
+        foreach ($dependencies as $index => $dependency) {
             if ($dependency instanceof Instance) {
-                if ($dependency->$id !== null) {
-                    $dependency[$index] = $this->get($dependency->$id);
+                if ($dependency->id !== null) {
+                    $dependencies[$index] = $this->get($dependency->id);
                 }
             } elseif ($reflection !== null) {
                 exit('Missing required parameter');
@@ -191,6 +209,13 @@ class Container extends Object
             }
             return $ps;
         }
+    }
+
+
+    public function getMsg()
+    {
+        return ['definitions' => $this->_definitions, 'dependencies' => $this->_dependencies,
+            'param' => $this->_params, 'reflections' => $this->_reflections, 'singletons' => $this->_singletons];
     }
 
 
