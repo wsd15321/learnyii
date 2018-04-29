@@ -133,7 +133,8 @@ class Container extends Object
         } elseif (is_array($definition)) {
             if (!isset($definition['class'])) {
                 if (strpos($class, '\\') !== false) {
-                    $definition[$class] = $class;
+                    //给$definition加上['class']
+                    $definition['class'] = $class;
                 } else {
                     exit("A class definition requires a \"class\" member.");
                 }
@@ -167,7 +168,7 @@ class Container extends Object
                 }
             }
         }
-        $this->_definitions[$class] = $dependencies;
+        $this->_dependencies[$class] = $dependencies;
         $this->_reflections[$class] = $reflection;
         return [$reflection, $dependencies];
     }
@@ -183,9 +184,9 @@ class Container extends Object
             if ($dependency instanceof Instance) {
                 if ($dependency->id !== null) {
                     $dependencies[$index] = $this->get($dependency->id);
+                } elseif ($reflection !== null) {
+                    exit('Missing required parameter');
                 }
-            } elseif ($reflection !== null) {
-                exit('Missing required parameter');
             }
         }
         return $dependencies;
