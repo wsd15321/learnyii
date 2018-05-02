@@ -164,10 +164,12 @@ class Container extends Object
                 } else {
                     //构造函数参数是否为对象
                     $c = $param->getClass();
+                    //参数为对象就是依赖，通过反射获取所依赖对象的命名空间
                     $dependencies[] = Instance::of($c === null ? null : $c->getName());
                 }
             }
         }
+        //顺便添加到参数作为缓存
         $this->_dependencies[$class] = $dependencies;
         $this->_reflections[$class] = $reflection;
         return [$reflection, $dependencies];
