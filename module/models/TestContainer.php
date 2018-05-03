@@ -47,3 +47,21 @@ class UserLister extends Object
     }
 }
 
+class TestContainer {
+
+    public $a;
+
+    public function __construct($a = 1)
+    {
+        $this->a = $a;
+    }
+
+
+    public function getUser()
+    {
+        return 'ok';
+    }
+
+
+}
+
