@@ -2,6 +2,8 @@
 
 namespace yii;
 
+use yii\di\Container;
+
 defined('YII2_PATH') or define('YII2_PATH', __DIR__);
 
 class BaseYii
@@ -15,6 +17,9 @@ class BaseYii
 
     public static $classMap;
 
+    /** @var  object
+     * @see Container
+     */
     public static $container;
 
     /**
@@ -128,9 +133,24 @@ class BaseYii
 
     /**
      * yii专用创建对象的方法
+     * @param array|string|object $type 要创建的对象
+     * @param array $params
+     *
      */
-    public static function createObject()
+    public static function createObject($type,$params = [])
     {
+        if (is_string($type)) {
+            return static::$container->get($type,$params);
+        } elseif (is_array($type) && isset($type['class'])) {
+            $class = $type['class'];
+            //其余元素作为参数
+            unset($type['class']);
+            return static::$container->get($class,$params,$type);
+        } elseif (is_callable($type)) {
+            //todo 未完成
+        } else {
+            exit('createObject fail');
+        }
 
     }
 

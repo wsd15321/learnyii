@@ -23,24 +23,39 @@ class ServiceLocator
     private $_definitions = [];
 
 
-
-
+    /**
+     * @param string $id
+     * @return object
+     */
     public function get($id,$throwException = true)
     {
+        //已实例化过的组件
+        if (isset($this->_components[$id])) {
+            return $this->_components[$id];
+        }
+
+        if (isset($this->_definitions[$id])) {
+            $definition = $this->_definitions[$id];
+            if (is_object($this->_definitions[$id] && !$definition instanceof \Closure)) {
+                return $this->_components[$id] = $definition;
+            } else {
+                return $this->_components[$id] = \Yii::createObject($definition);
+            }
+        } else {
+            exit("Unknown component ID: $id");
+        }
 
     }
 
 
-
-
-
-
-
     /**
      * 配置$this->_definition数组
+     * @param string $id 组件名称 'db','cache'
+     * @param mixed $definition 要注册的服务内容
      */
     public function set($id,$definition)
     {
+        //null代表移除组件
         if ($definition === null) {
             unset($this->_components[$id],$this->_definitions[$id]);
         }
@@ -75,6 +90,7 @@ class ServiceLocator
      *         'db' => 'db',
      *     ],
      * ]
+     * 相当于批量调用set()
      */
     public function setComponents($components)
     {
