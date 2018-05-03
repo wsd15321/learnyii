@@ -12,4 +12,21 @@ namespace yii\base;
 class Behavior
 {
 
+    public $owner;
+
+    public function events()
+    {
+        return [];
+    }
+
+    /**
+     * @param Component $owner
+     */
+    public function attach($owner)
+    {
+
+    }
+
+
+
 }
