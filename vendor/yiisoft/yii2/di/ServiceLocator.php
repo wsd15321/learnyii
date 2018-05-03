@@ -72,7 +72,7 @@ class ServiceLocator
                 exit('config error not class');
             }
         } else {
-            exit('Unexpected configuration type for the '.$id.' componen');
+            exit('Unexpected configuration type for the '.$id);
         }
 
     }
