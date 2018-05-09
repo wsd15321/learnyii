@@ -110,7 +110,7 @@ class Component extends Object
     public function attachesBehaviorInternal($name, $behavior)
     {
         if (!$behavior instanceof Behavior) {
-            //不是行为直接创建对象
+            //直接创建对象
             $behavior = \Yii::createObject($behavior);
         }
         //是否匿名绑定,不填键名就是匿名绑定
