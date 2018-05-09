@@ -10,9 +10,9 @@ $config = yii\helpers\ArrayHelper::merge(
 );
 
 
-$tpl = new \module\models\Tpl();
+$tpl = new \module\models\TestBehavior();
 
-var_dump($tpl->test()); exit;
+var_dump($tpl->abc); exit;
 
 
 

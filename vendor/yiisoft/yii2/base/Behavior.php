@@ -9,9 +9,10 @@
 namespace yii\base;
 
 
-class Behavior
+class Behavior extends Object
 {
 
+    /** @var  object */
     public $owner;
 
     public function events()
@@ -24,9 +25,20 @@ class Behavior
      */
     public function attach($owner)
     {
+        $this->owner = $owner;
+        foreach ($this->events() as $event => $handle) {
+            $owner->on($event, is_string($handle) ? [$this , $handle] : $handle);
+        }
 
     }
 
+    /**
+     * 解除行为绑定
+     */
+    public function detach()
+    {
+
+    }
 
 
 }
