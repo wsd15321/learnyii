@@ -40,7 +40,13 @@ class Component extends Object
 
     public function __call($name, $arguments)
     {
-
+        $this->ensureBehaviors();
+        foreach ($this->_behaviors as $behavior) {
+            if ($behavior->hasMethod($name)) {
+                return call_user_func_array([$behavior,$name],$arguments);
+            }
+        }
+        exit('方法不存在');
     }
 
 

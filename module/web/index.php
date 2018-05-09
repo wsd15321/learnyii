@@ -12,7 +12,7 @@ $config = yii\helpers\ArrayHelper::merge(
 
 $tpl = new \module\models\TestBehavior();
 
-var_dump($tpl->abc); exit;
+var_dump($tpl->getAbc()); exit;
 
 
 
