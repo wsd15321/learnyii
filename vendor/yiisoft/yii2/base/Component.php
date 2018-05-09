@@ -113,7 +113,7 @@ class Component extends Object
      * @param string|array|Behavior $behavior the behavior to be attached
      * @return Behavior the attached behavior.
      */
-    public function attachesBehaviorInternal($name, $behavior)
+    private function attachesBehaviorInternal($name, $behavior)
     {
         if (!$behavior instanceof Behavior) {
             //直接创建对象
@@ -135,7 +135,7 @@ class Component extends Object
     }
 
 
-    public function ensureBehaviors()
+    private function ensureBehaviors()
     {
         if ($this->_behaviors === null) {
             $this->_behaviors = [];
