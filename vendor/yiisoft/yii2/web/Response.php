@@ -2,13 +2,38 @@
 
 namespace yii\web;
 
-/**
- * Created by PhpStorm.
- * User: sc
- * Date: 2018/5/3/003
- * Time: 11:36
- */
-class Response
+
+class Response extends \yii\base\Response
 {
+
+    public $stream = null;
+
+    public $content;
+
+
+
+
+
+
+
+
+
+    /**
+     * 设置$ths->content内容
+     */
+    protected function prepare()
+    {
+
+    }
+
+
+    protected function senContent()
+    {
+        if ($this->stream === null) {
+            echo $this->content;
+            exit;
+        }
+    }
+
 
 }
