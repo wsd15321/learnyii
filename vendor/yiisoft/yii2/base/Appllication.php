@@ -8,7 +8,22 @@
 
 namespace yii\base;
 
+use Yii;
 
-abstract class Appllication {
-    
+abstract class Appllication  extends Module {
+
+
+    /**
+     * @var array list of loaded modules indexed by their class names.
+     */
+    public $loadedModels = [];
+
+
+    public function __construct($id, $parent = null, array $config = [])
+    {
+        Yii::$app = $this;
+        parent::__construct($id, $parent, $config);
+    }
+
+
 }

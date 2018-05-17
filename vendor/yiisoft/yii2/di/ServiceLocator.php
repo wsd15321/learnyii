@@ -9,7 +9,9 @@
 namespace yii\di;
 
 
-class ServiceLocator
+use yii\base\Component;
+
+class ServiceLocator extends Component
 {
 
 
