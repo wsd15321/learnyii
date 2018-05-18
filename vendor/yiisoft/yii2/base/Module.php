@@ -260,6 +260,34 @@ class Module extends ServiceLocator
             $route = $this->defaultRoute;
         }
 
+        if ($pos = strpos($route, '//') !== false) {
+            return null;
+        }
+
+        if (strpos($route, '/') !== false) {
+            list($id, $route) = explode('/', $route, 2);
+        } else {
+            $id = $route;
+            $route = '';
+        }
+
+        if (isset($this->controllerMap[$id])) {
+            $controller = Yii::createObject($this->controllerMap[$id], [$id, $this]);
+            return [$controller, $route];
+        }
+
+        $module = $this->getModule($id);
+        if ($module !== null) {
+            return $this->createController($module);
+        }
+
+        if ($pos = strpos($route, '/') !== false) {
+            $id = substr($route, 0, $pos);
+            $route = substr($route, $pos + 1);
+        }
+
+        $controller = $this->createControllerById($id);
+
 
 
     }
