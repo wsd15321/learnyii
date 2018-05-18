@@ -216,6 +216,53 @@ class Module extends ServiceLocator
         }
     }
 
+    /**
+     * 通过$id创建controller实例 $id=>controller name 去掉Controller后的名字
+     *
+     */
+    public function createControllerById($id)
+    {
+        $pos = strpos('/', $id);
+        if ($pos === false) {
+            $prefix = '';
+            $className = $id;
+        } else {
+            $prefix = substr($id, 0, $pos);
+            $className = substr($id, $pos + 1);
+        }
+
+        if (!preg_match('%^[a-z][a-z0-9\\-_]*$%', $className)) {
+            return null;
+        }
+        if ($prefix !== '' && !preg_match('%^[a-z0-9_/]+$%i', $prefix)) {
+            return null;
+        }
+        //简单版
+        $className = str_replace(' ', '', ucwords($className)) . 'Controller';
+        $className = $this->controllerNamespace . $prefix . $className;
+
+        if (strpos($className, '-') !== false || !class_exists($className)) {
+            return null;
+        }
+
+        if (is_subclass_of($className, 'yii\base\Controller')) {
+            $controller = Yii::createObject($className, [$id, $this]);
+            return get_class($controller) === $className ? $controller : null;
+        } else {
+            exit('Controller class must extend from \\yii\\base\\Controller');
+        }
+
+    }
+
+    public function createController($route)
+    {
+        if ($route === '') {
+            $route = $this->defaultRoute;
+        }
+
+
+
+    }
 
 
 }

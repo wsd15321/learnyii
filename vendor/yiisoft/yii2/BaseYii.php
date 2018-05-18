@@ -17,8 +17,8 @@ class BaseYii
 
     public static $classMap;
 
-    /** @var  object
-     * @see Container
+    /**
+     * @var Container
      */
     public static $container;
 
