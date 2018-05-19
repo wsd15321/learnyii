@@ -10,7 +10,7 @@ namespace yii\base;
 
 use Yii;
 
-abstract class Appllication  extends Module {
+abstract class Application  extends Module {
 
 
     /**
