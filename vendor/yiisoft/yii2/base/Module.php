@@ -254,16 +254,20 @@ class Module extends ServiceLocator
 
     }
 
+    /**
+     * 创建controller控制器对象
+     */
     public function createController($route)
     {
+        //传入的路由为空就采用默认路径
         if ($route === '') {
             $route = $this->defaultRoute;
         }
-
+        //是否有多级路由
         if ($pos = strpos($route, '//') !== false) {
             return null;
         }
-
+        //拆分路径
         if (strpos($route, '/') !== false) {
             list($id, $route) = explode('/', $route, 2);
         } else {
@@ -276,6 +280,7 @@ class Module extends ServiceLocator
             return [$controller, $route];
         }
 
+        //优先加载module?
         $module = $this->getModule($id);
         if ($module !== null) {
             return $this->createController($module);
@@ -285,10 +290,13 @@ class Module extends ServiceLocator
             $id = substr($route, 0, $pos);
             $route = substr($route, $pos + 1);
         }
-
+        //id就是去掉Controller后的类名
         $controller = $this->createControllerById($id);
 
-
+        if ($controller === null && $route !== '') {
+            return $this->createControllerById($id . '/'. $route);
+        }
+        return $controller !== null ? [$controller, $route] : false;
 
     }
 
