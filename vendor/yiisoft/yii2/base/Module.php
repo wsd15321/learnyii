@@ -294,9 +294,19 @@ class Module extends ServiceLocator
         $controller = $this->createControllerById($id);
 
         if ($controller === null && $route !== '') {
-            return $this->createControllerById($id . '/'. $route);
+            return $this->createControllerById($id . '/' . $route);
         }
         return $controller !== null ? [$controller, $route] : false;
+
+    }
+
+    public function runAction($route, $params = [])
+    {
+        $parts = $this->createController($route);
+        if (is_array($parts)) {
+            list($controller, $actionId) = $parts;
+        }
+
 
     }
 
