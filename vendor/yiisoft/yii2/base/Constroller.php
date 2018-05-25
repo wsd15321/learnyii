@@ -23,4 +23,13 @@ class Constroller extends Component
         parent::__construct($config);
     }
 
+    /**
+     * Constroller action
+     */
+    public function runAction($id, $params = [])
+    {
+
+    }
+
+
 }
