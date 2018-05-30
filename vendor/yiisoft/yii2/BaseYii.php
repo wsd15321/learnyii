@@ -9,7 +9,7 @@ defined('YII2_PATH') or define('YII2_PATH', __DIR__);
 class BaseYii
 {
 
-
+    /** @var \yii\web\Application */
     public static $app;
 
     /** @var array 别名组合 */

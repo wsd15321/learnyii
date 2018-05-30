@@ -305,8 +305,16 @@ class Module extends ServiceLocator
         $parts = $this->createController($route);
         if (is_array($parts)) {
             list($controller, $actionId) = $parts;
+            $oldController = Yii::$app->controller;
+            Yii::$app->controller = $controller;
+            $result = $controller->runAction($actionId, $params);
+            if (Yii::$app->controller !== null) {
+                Yii::$app->controller = $oldController;
+            }
+            return $result;
+        } else {
+            exit('error modele runAction');
         }
-
 
     }
 
