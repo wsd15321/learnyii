@@ -148,5 +148,28 @@ class Component extends Object
         }
     }
 
+    public function trigger($name, Event $event = null)
+    {
+        $this->ensureBehaviors();
+        if (!empty($this->_event[$name])) {
+            if ($event === null) {
+                $event = new Event();
+            }
+            if ($event->sender === null) {
+                $event->sender = $this;
+            }
+            $event->handled = false;
+            $event->name = $name;
+            foreach ($this->_event[$name] as $handler) {
+                $event->data = $handler[1];
+                call_user_func($handler[0], $event);
+                if ($event->handled) {
+                    return;
+                }
+            }
+        }
+        Event::trigger($this, $name, $event);
+    }
+
 
 }
