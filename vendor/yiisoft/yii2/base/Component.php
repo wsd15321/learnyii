@@ -171,5 +171,10 @@ class Component extends Object
         Event::trigger($this, $name, $event);
     }
 
+    public function getEvent()
+    {
+        return $this->_event;
+    }
+
 
 }
