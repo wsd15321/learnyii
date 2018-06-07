@@ -8,6 +8,7 @@
 
 namespace yii\base;
 
+use Yii;
 
 class Controller extends Component
 {
@@ -23,6 +24,11 @@ class Controller extends Component
         parent::__construct($config);
     }
 
+    public function actions()
+    {
+        return [];
+    }
+
     /**
      * Constroller action
      */
@@ -31,8 +37,24 @@ class Controller extends Component
 
     }
 
+    public function createAction($id)
+    {
 
-    
+        $actionMap = $this->actions();
+        if (isset($actionMap[$id])) {
+            return Yii::createObject($actionMap[$id], [$id, $this]);
+        } else {
+            $methodName = 'action' . ucwords($id);
+            if (method_exists($this, $methodName)) {
+                $ref = new \ReflectionMethod($this, $methodName);
+                if ($ref->isPublic() && $ref->getName() === $methodName) {
+                    //TODO
+
+                }
+            }
+        }
+
+    }
 
 
 }
