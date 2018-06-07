@@ -7,4 +7,15 @@
  */
 return [
     'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
+
+    'components' => [
+        'db' => [
+            'class' => '',
+            'dsn' => '',
+            'username' => '',
+            'password' => '',
+            'charset' => 'utf8',
+        ],
+    ],
+
 ];
