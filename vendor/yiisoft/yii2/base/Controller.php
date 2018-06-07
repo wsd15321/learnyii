@@ -9,7 +9,7 @@
 namespace yii\base;
 
 
-class Constroller extends Component
+class Controller extends Component
 {
 
     public $id;
@@ -30,6 +30,9 @@ class Constroller extends Component
     {
 
     }
+
+
+    
 
 
 }

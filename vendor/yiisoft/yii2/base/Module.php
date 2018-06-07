@@ -8,6 +8,7 @@
 
 namespace yii\base;
 
+use module\controllers\Controller;
 use yii\di\ServiceLocator;
 use Yii;
 
@@ -307,6 +308,7 @@ class Module extends ServiceLocator
             list($controller, $actionId) = $parts;
             $oldController = Yii::$app->controller;
             Yii::$app->controller = $controller;
+            /** @var \yii\base\Controller $controller */
             $result = $controller->runAction($actionId, $params);
             if (Yii::$app->controller !== null) {
                 Yii::$app->controller = $oldController;
