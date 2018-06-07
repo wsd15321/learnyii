@@ -34,12 +34,12 @@ class Controller extends Component
      */
     public function runAction($id, $params = [])
     {
-
+        //TODO
+        return $this->createAction($id);
     }
 
     public function createAction($id)
     {
-
         $actionMap = $this->actions();
         if (isset($actionMap[$id])) {
             return Yii::createObject($actionMap[$id], [$id, $this]);
@@ -49,7 +49,7 @@ class Controller extends Component
                 $ref = new \ReflectionMethod($this, $methodName);
                 if ($ref->isPublic() && $ref->getName() === $methodName) {
                     //TODO
-
+                    return $this->$methodName();
                 }
             }
         }
