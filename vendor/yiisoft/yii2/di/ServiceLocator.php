@@ -93,6 +93,7 @@ class ServiceLocator extends Component
      *     ],
      * ]
      * 相当于批量调用set()
+     * 在框架中一开始就以setter方式调用
      */
     public function setComponents($components)
     {
