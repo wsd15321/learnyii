@@ -23,6 +23,9 @@ class TestBehavior extends Component
                 'class' => 'module\models\getid',
                 'owner' => $this
             ],
+            'ok' => [
+
+            ],
         ];
     }
 

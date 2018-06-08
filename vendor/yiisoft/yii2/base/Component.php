@@ -14,7 +14,7 @@ class Component extends Object
 
     private $_event = [];
 
-    /** @var  array */
+    /** @var  Behavior[] */
     private $_behaviors;
 
 
@@ -127,6 +127,7 @@ class Component extends Object
             if (isset($this->_behaviors[$name])) {
                 $this->_behaviors[$name]->detach();
             }
+            $behavior->attach($this);
             $this->_behaviors[$name] = $behavior;
         }
 
