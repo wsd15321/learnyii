@@ -24,7 +24,7 @@ class TestBehavior extends Component
                 'owner' => $this
             ],
             'ok' => [
-
+                'class' => 'module\models\AgetA'
             ],
         ];
     }
